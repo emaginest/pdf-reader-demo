@@ -1,0 +1,25 @@
+# Core dependencies
+fastapi>=0.100.0  # Using FastAPI compatible with Pydantic v2
+uvicorn>=0.21.1
+pydantic>=2.0.0  # Using Pydantic v2
+pydantic-settings>=2.0.0  # Required for BaseSettings in Pydantic v2
+python-multipart>=0.0.6
+python-dotenv>=1.0.0
+httpx>=0.24.0  # Required for URL ingestion
+psutil>=5.9.0  # For memory usage monitoring
+
+# PDF processing
+PyPDF2>=3.0.0
+
+# Database
+psycopg2-binary>=2.9.6
+sqlalchemy>=2.0.0
+pgvector>=0.2.0
+
+# Agents Hub
+agents-hub>=0.1.4
+
+# Testing
+pytest>=7.3.1
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
