@@ -78,19 +78,31 @@ with tab1:
             )
 
             # Display the result
-            if result.get("success", False):
-                display_success("PDF ingested successfully!")
-                display_document_info(result)
+            if isinstance(result, dict):
+                # Check if the result is a dictionary with a success field
+                if result.get("success", False):
+                    # Success case
+                    if "message" in result:
+                        display_success(result["message"])
+                    else:
+                        display_success("PDF ingested successfully!")
 
-                # Store the document ID in session state for other pages
-                if "document_id" in result:
-                    st.session_state["last_document_id"] = result["document_id"]
-                if "version" in result:
-                    st.session_state["last_version"] = result["version"]
+                    display_document_info(result)
+
+                    # Store the document ID in session state for other pages
+                    if "document_id" in result:
+                        st.session_state["last_document_id"] = result["document_id"]
+                    if "version" in result:
+                        st.session_state["last_version"] = result["version"]
+                elif "error" in result and result["error"]:
+                    # Error case with error field
+                    display_error(f"Failed to ingest PDF: {result['error']}")
+                else:
+                    # Unknown error case
+                    display_error(f"Failed to ingest PDF: Unknown error")
             else:
-                display_error(
-                    f"Failed to ingest PDF: {result.get('error', 'Unknown error')}"
-                )
+                # Not a dictionary
+                display_error(f"Failed to ingest PDF: Invalid response format")
 
 # Multiple URLs tab
 with tab2:
@@ -156,10 +168,22 @@ with tab2:
             )
 
             # Display the result
-            if result.get("success", False):
-                display_success("PDFs ingested successfully!")
-                st.json(result)
+            if isinstance(result, dict):
+                # Check if the result is a dictionary with a success field
+                if result.get("success", False):
+                    # Success case
+                    if "message" in result:
+                        display_success(result["message"])
+                    else:
+                        display_success("PDFs ingested successfully!")
+
+                    st.json(result)
+                elif "error" in result and result["error"]:
+                    # Error case with error field
+                    display_error(f"Failed to ingest PDFs: {result['error']}")
+                else:
+                    # Unknown error case
+                    display_error(f"Failed to ingest PDFs: Unknown error")
             else:
-                display_error(
-                    f"Failed to ingest PDFs: {result.get('error', 'Unknown error')}"
-                )
+                # Not a dictionary
+                display_error(f"Failed to ingest PDFs: Invalid response format")

@@ -91,16 +91,28 @@ if upload_button and uploaded_file is not None:
         )
 
         # Display the result
-        if result.get("success", False):
-            display_success("Document uploaded successfully!")
-            display_document_info(result)
+        if isinstance(result, dict):
+            # Check if the result is a dictionary with a success field
+            if result.get("success", False):
+                # Success case
+                if "message" in result:
+                    display_success(result["message"])
+                else:
+                    display_success("Document uploaded successfully!")
 
-            # Store the document ID in session state for other pages
-            if "document_id" in result:
-                st.session_state["last_document_id"] = result["document_id"]
-            if "version" in result:
-                st.session_state["last_version"] = result["version"]
+                display_document_info(result)
+
+                # Store the document ID in session state for other pages
+                if "document_id" in result:
+                    st.session_state["last_document_id"] = result["document_id"]
+                if "version" in result:
+                    st.session_state["last_version"] = result["version"]
+            elif "error" in result and result["error"]:
+                # Error case with error field
+                display_error(f"Failed to upload document: {result['error']}")
+            else:
+                # Unknown error case
+                display_error(f"Failed to upload document: Unknown error")
         else:
-            display_error(
-                f"Failed to upload document: {result.get('error', 'Unknown error')}"
-            )
+            # Not a dictionary
+            display_error(f"Failed to upload document: Invalid response format")
