@@ -24,6 +24,25 @@ services:
         reservations:
           memory: 512M # Reserve 512MB of memory
 
+  streamlit:
+    build: ./streamlit
+    ports:
+      - "8501:8501"
+    environment:
+      - API_BASE_URL=http://host.docker.internal:8000
+    depends_on:
+      - app
+    restart: unless-stopped
+    # Add extra_hosts to ensure host.docker.internal works on Linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
   db:
     image: pgvector/pgvector:pg15
     ports:
